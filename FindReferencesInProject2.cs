@@ -33,7 +33,7 @@ public static class FindReferencesInProject2
         if (isMacOS)
         {
             psi.FileName = "/usr/bin/mdfind";
-            psi.Arguments = string.Format("-literal -onlyin {0} {1}", appDataPath, selectedAssetGUID);
+            psi.Arguments = string.Format("-onlyin {0} {1}", appDataPath, selectedAssetGUID);
         }
         else
         {
