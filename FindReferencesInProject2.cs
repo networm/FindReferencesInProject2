@@ -38,9 +38,9 @@ public static class FindReferencesInProject2
         else
         {
             psi.FileName = Path.Combine(Environment.CurrentDirectory, @"Tools\FindReferencesInProject2\rg.exe");
-            psi.Arguments = string.Format(" --case-sensitive --follow --files-with-matches --no-text --fixed-strings" +
-                                          " --ignore-file Assets/Editor/FindReferencesInProject2/ignore.txt" +
-                                          " --threads {0} --regexp {1} -- {2}",
+            psi.Arguments = string.Format("--case-sensitive --follow --files-with-matches --no-text --fixed-strings " +
+                                          "--ignore-file Assets/Editor/FindReferencesInProject2/ignore.txt " +
+                                          "--threads {0} --regexp {1} -- {2}",
                 cpuCount, selectedAssetGUID, appDataPath);
         }
 
