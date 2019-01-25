@@ -140,7 +140,7 @@ public static class FindReferencesInProject2
             if (AssetDatabase.Contains(obj))
             {
                 string path = AssetDatabase.GetAssetPath(obj);
-                return !Directory.Exists(path);
+                return !AssetDatabase.IsValidFolder(path);
             }
         }
 
