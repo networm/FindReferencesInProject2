@@ -8,7 +8,7 @@ using UnityEngine;
 
 public static class FindReferencesInProject2
 {
-    [MenuItem("Assets/Find References In Project %#f", false, 25)]
+    [MenuItem("Assets/Find References In Project %&#f", false, 25)]
     public static void Find()
     {
         bool isMacOS = Application.platform == RuntimePlatform.OSXEditor;
@@ -131,7 +131,7 @@ public static class FindReferencesInProject2
         UnityEngine.Debug.LogWarning(content, selectedObject);
     }
 
-    [MenuItem("Assets/Find References In Project %#f", true)]
+    [MenuItem("Assets/Find References In Project %&#f", true)]
     private static bool FindValidate()
     {
         var obj = Selection.activeObject;

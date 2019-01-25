@@ -6,7 +6,7 @@ Find asset references super fast in Unity project. Both on macOS and Windows.
 
 ## Usage
 
-1. Select asset in Project view and click `Ctrl+Shfit+F`.
+1. Select asset in Project view and click `Ctrl+Alt+Shfit+F`.
 2. Right click asset in Project view and select `Find References In Project` in popup menu.
 
 ## Feature
