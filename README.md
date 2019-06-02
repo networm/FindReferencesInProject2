@@ -20,7 +20,7 @@ Find asset references super fast in Unity project. Both on macOS and Windows.
 
 ### macOS
 
-It only takes less than 2 seconds to complete search, it uses mdfind to utilize Spotlight index to speed up searching.
+It only takes less than 2 seconds to complete search, it uses `mdfind` to utilize Spotlight index to speed up searching.
 
 ### Windows
 
@@ -30,13 +30,21 @@ So it would takes about 5 seconds to search ~700M and ~7000 files on SSD.
 
 ## Install
 
+### macOS
+
+1. Clone repository into `Assets/Editor` directory.
+
+Job done! It just uses the `mdfind` built in macOS and has no other dependencies.
+
+### Windows
+
 1. Clone repository into `Assets/Editor` directory.
 2. Download `ripgrep` from [Latest release · BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep/releases/latest) and extract `rg.exe` to `Tools\FindReferencesInProject2` directory.
 3. Click `Unlock file` in `rg.exe` Properties, or you will find it takes too long time to start first time.
 
 Note: It seems that `x86_64-pc-windows-msvc` has a smaller size in `ripgrep` release page.
 
-[How to remove file unlock in file properties.](https://social.technet.microsoft.com/Forums/en-US/086b25dd-803e-47cd-b2a6-8086c529577d/how-to-remove-file-unlock-in-file-properties?forum=winserverGP)
+- [How to remove file unlock in file properties.](https://social.technet.microsoft.com/Forums/en-US/086b25dd-803e-47cd-b2a6-8086c529577d/how-to-remove-file-unlock-in-file-properties?forum=winserverGP)
 
 ## Environment
 
