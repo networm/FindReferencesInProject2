@@ -8,20 +8,23 @@ using UnityEngine;
 
 public static class FindReferencesInProject2
 {
-    [MenuItem("Assets/Find References In Project %&#f", false, 25)]
+    private const string MenuItemName = "Assets/Find References In Project %#&f";
+    private const string MetaExtension = ".meta";
+
+    [MenuItem(MenuItemName, false, 25)]
     public static void Find()
     {
         bool isMacOS = Application.platform == RuntimePlatform.OSXEditor;
         int totalWaitMilliseconds = isMacOS ? 2 * 1000 : 300 * 1000;
+        int cpuCount = Environment.ProcessorCount;
+        string appDataPath = Application.dataPath;
 
         var selectedObject = Selection.activeObject;
         string selectedAssetPath = AssetDatabase.GetAssetPath(selectedObject);
         string selectedAssetGUID = AssetDatabase.AssetPathToGUID(selectedAssetPath);
-        string selectedAssetMetaPath = selectedAssetPath + ".meta";
-        string appDataPath = Application.dataPath;
-        int cpuCount = Environment.ProcessorCount;
+        string selectedAssetMetaPath = selectedAssetPath + MetaExtension;
 
-        List<string> references = new List<string>();
+        var references = new List<string>();
         var output = new System.Text.StringBuilder();
 
         var stopwatch = new Stopwatch();
@@ -48,7 +51,7 @@ public static class FindReferencesInProject2
         psi.RedirectStandardOutput = true;
         psi.RedirectStandardError = true;
 
-        Process process = new Process();
+        var process = new Process();
         process.StartInfo = psi;
 
         process.OutputDataReceived += (sender, e) =>
@@ -101,47 +104,38 @@ public static class FindReferencesInProject2
             }
         }
 
-        foreach (var file in references)
+        foreach (string file in references)
         {
-            output.AppendLine(file);
+            string guid = AssetDatabase.AssetPathToGUID(file);
+            output.AppendLine(string.Format("{0} {1}", guid, file));
 
             string assetPath = file;
-            if (file.EndsWith(".meta"))
+            if (file.EndsWith(MetaExtension))
             {
-                assetPath = file.Substring(0, file.Length - ".meta".Length);
+                assetPath = file.Substring(0, file.Length - MetaExtension.Length);
             }
 
-            UnityEngine.Debug.Log(assetPath, AssetDatabase.LoadMainAssetAtPath(assetPath));
+            UnityEngine.Debug.Log(string.Format("{0}\n{1}", file, guid), AssetDatabase.LoadMainAssetAtPath(assetPath));
         }
 
         EditorUtility.ClearProgressBar();
         stopwatch.Stop();
 
-        string content;
-        if (references.Count < 2)
-        {
-            content = string.Format("{0} reference found for object: \"{1}\" path: \"{2}\" total time: {4}s\n\n{3}",
-                references.Count, selectedObject.name, selectedAssetPath, output, stopwatch.ElapsedMilliseconds / 1000d);
-        }
-        else
-        {
-            content = string.Format("{0} references found for object: \"{1}\" path: \"{2}\" total time: {4}s\n\n{3}",
-                references.Count, selectedObject.name, selectedAssetPath, output, stopwatch.ElapsedMilliseconds / 1000d);
-        }
+        string content = string.Format(
+            "{0} {1} found for object: \"{2}\" path: \"{3}\" guid: \"{4}\" total time: {5}s\n\n{6}",
+            references.Count, references.Count > 2 ? "references" : "reference", selectedObject.name, selectedAssetPath,
+            selectedAssetGUID, stopwatch.ElapsedMilliseconds / 1000d, output);
         UnityEngine.Debug.LogWarning(content, selectedObject);
     }
 
-    [MenuItem("Assets/Find References In Project %&#f", true)]
+    [MenuItem(MenuItemName, true)]
     private static bool FindValidate()
     {
         var obj = Selection.activeObject;
-        if (obj != null)
+        if (obj != null && AssetDatabase.Contains(obj))
         {
-            if (AssetDatabase.Contains(obj))
-            {
-                string path = AssetDatabase.GetAssetPath(obj);
-                return !AssetDatabase.IsValidFolder(path);
-            }
+            string path = AssetDatabase.GetAssetPath(obj);
+            return !AssetDatabase.IsValidFolder(path);
         }
 
         return false;
