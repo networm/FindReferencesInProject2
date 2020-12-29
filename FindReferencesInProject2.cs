@@ -51,7 +51,13 @@ public static class FindReferencesInProject2
         else
         {
             var ignore_file = Path.Combine(InstallDirectory, "ignore.txt");
-            psi.FileName = Path.Combine(Environment.CurrentDirectory, @"Tools\FindReferencesInProject2\rg.exe");
+            var filepath = Path.Combine(Environment.CurrentDirectory, @"Tools\FindReferencesInProject2\rg.exe");
+            if (!File.Exists(filepath))
+            {
+                // Assume it's in our path.
+                filepath = "rg.exe";
+            }
+            psi.FileName = filepath;
             psi.Arguments = string.Format("--case-sensitive --follow --files-with-matches --no-text --fixed-strings " +
                                           "--ignore-file {3} " +
                                           "--threads {0} --regexp {1} -- {2}",
@@ -87,7 +93,19 @@ public static class FindReferencesInProject2
             output.AppendLine("Error: " + e.Data);
         };
 
-        process.Start();
+        try
+        {
+            process.Start();
+        }
+        catch (SystemException)
+        {
+            if (!isMacOS)
+            {
+                var destination = Path.Combine(Environment.CurrentDirectory, @"Tools\FindReferencesInProject2");
+                UnityEngine.Debug.LogError($"Couldn't find ripgrep. Download ripgrep from https://github.com/BurntSushi/ripgrep/releases/latest and extract rg.exe to {destination} or add it to your PATH.");
+            }
+            throw;
+        }
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
 
