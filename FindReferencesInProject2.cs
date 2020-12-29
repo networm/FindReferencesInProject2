@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEditor;
 using UnityEngine;
@@ -11,9 +12,18 @@ public static class FindReferencesInProject2
     private const string MenuItemName = "Assets/Find References In Project %#&f";
     private const string MetaExtension = ".meta";
 
+    private static string InstallDirectory = "Assets/Editor/FindReferencesInProject2";
+
+    private static void UpdateInstallDirectory([CallerFilePath] string executingFilePath = "")
+    {
+        InstallDirectory = Path.GetDirectoryName(executingFilePath);
+    }
+
     [MenuItem(MenuItemName, false, 25)]
     public static void Find()
     {
+        UpdateInstallDirectory();
+
         bool isMacOS = Application.platform == RuntimePlatform.OSXEditor;
         int totalWaitMilliseconds = isMacOS ? 2 * 1000 : 300 * 1000;
         int cpuCount = Environment.ProcessorCount;
@@ -40,11 +50,18 @@ public static class FindReferencesInProject2
         }
         else
         {
-            psi.FileName = Path.Combine(Environment.CurrentDirectory, @"Tools\FindReferencesInProject2\rg.exe");
+            var ignore_file = Path.Combine(InstallDirectory, "ignore.txt");
+            var filepath = Path.Combine(Environment.CurrentDirectory, @"Tools\FindReferencesInProject2\rg.exe");
+            if (!File.Exists(filepath))
+            {
+                // Assume it's in our path.
+                filepath = "rg.exe";
+            }
+            psi.FileName = filepath;
             psi.Arguments = string.Format("--case-sensitive --follow --files-with-matches --no-text --fixed-strings " +
-                                          "--ignore-file Assets/Editor/FindReferencesInProject2/ignore.txt " +
+                                          "--ignore-file {3} " +
                                           "--threads {0} --regexp {1} -- {2}",
-                cpuCount, selectedAssetGUID, appDataPath);
+                cpuCount, selectedAssetGUID, appDataPath, ignore_file);
         }
 
         psi.UseShellExecute = false;
@@ -76,7 +93,19 @@ public static class FindReferencesInProject2
             output.AppendLine("Error: " + e.Data);
         };
 
-        process.Start();
+        try
+        {
+            process.Start();
+        }
+        catch (SystemException)
+        {
+            if (!isMacOS)
+            {
+                var destination = Path.Combine(Environment.CurrentDirectory, @"Tools\FindReferencesInProject2");
+                UnityEngine.Debug.LogError($"Couldn't find ripgrep. Download ripgrep from https://github.com/BurntSushi/ripgrep/releases/latest and extract rg.exe to {destination} or add it to your PATH.");
+            }
+            throw;
+        }
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
 
