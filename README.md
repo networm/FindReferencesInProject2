@@ -2,7 +2,7 @@
 
 Find asset references super fast in Unity project. Both on macOS and Windows.
 
-![Snapshot](Snapshot.png)
+![Snapshot](https://user-images.githubusercontent.com/43559/106349160-9af4c300-6280-11eb-88e9-23db004026f6.png)
 
 ## Usage
 
