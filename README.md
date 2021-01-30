@@ -30,17 +30,31 @@ So it would takes about 5 seconds to search ~700M and ~7000 files on SSD.
 
 ## Install
 
-### macOS
+Add this line to your Packages/manifest.json:
 
-1. Clone repository into `Assets/Editor` directory.
+    "com.github.idbrii.unity-findrefs": "https://github.com/idbrii/unity-findrefs.git#latest-release",
+
+### macOS
 
 Job done! It just uses the `mdfind` built in macOS and has no other dependencies.
 
 ### Windows
 
-1. Clone repository into `Assets/Editor` directory.
-2. Download `ripgrep` from [Latest release · BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep/releases/latest) and extract `rg.exe` to `Tools\FindReferencesInProject2` directory.
-3. Click `Unlock file` in `rg.exe` Properties, or you will find it takes too long time to start first time.
+#### Scoop
+
+If you're using [scoop](https://scoop.sh/), install ripgrep:
+
+```
+scoop install ripgrep
+```
+
+rg.exe is now in your PATH and usable by unity-findrefs.
+
+
+#### Manual
+
+1. Download `ripgrep` from [Latest release · BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep/releases/latest) and extract `rg.exe` to `Tools\FindReferencesInProject2` directory.
+2. Click `Unlock file` in `rg.exe` Properties, or you will find it takes too long time to start first time.
 
 Note: It seems that `x86_64-pc-windows-msvc` has a smaller size in `ripgrep` release page.
 
